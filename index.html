@@ -7,24 +7,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #13131c;
-      --card:      #1a1a28;
-      --border:    #2a2a40;
-      --text:      #e8e8f0;
-      --muted:     #6b6b88;
-      --accent:    #f5c518;
-
-      --s:   #ff4d4d;
-      --aplus: #ff7b00;
-      --a:   #ffca28;
-      --bplus: #a8e063;
-      --b:   #4fc3f7;
-      --c:   #b39ddb;
-      --d:   #80cbc4;
-      --f:   #546e7a;
-
+      --bg:      #0a0a0f;
+      --surface: #13131c;
+      --card:    #1a1a28;
+      --border:  #2a2a40;
+      --text:    #e8e8f0;
+      --muted:   #6b6b88;
+      --accent:  #f5c518;
+      --sidebar-w: 220px;
       --radius: 10px;
+
+      /* rank colours */
+      --col-splus: #e040fb;
+      --col-s:     #ff4d4d;
+      --col-aplus: #ff7b00;
+      --col-a:     #ffca28;
+      --col-b:     #4fc3f7;
+      --col-c:     #b39ddb;
+      --col-d:     #80cbc4;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,13 +34,144 @@
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ── HERO ── */
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .sidebar-logo {
+      padding: 22px 18px 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #f5c518, #ff7b00, #ff4d4d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-logo span {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      -webkit-text-fill-color: var(--muted);
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-section-title {
+      padding: 16px 18px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav { padding: 4px 10px 20px; display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .nav-item .nav-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      min-width: 34px;
+      text-align: center;
+      padding: 2px 6px;
+      border-radius: 5px;
+      letter-spacing: 0.05em;
+      transition: background .15s, color .15s;
+    }
+
+    /* default badge colours */
+    .nav-item[data-rank="splus"] .nav-badge { background: rgba(224,64,251,.15); color: var(--col-splus); border: 1px solid rgba(224,64,251,.3); }
+    .nav-item[data-rank="s"]     .nav-badge { background: rgba(255,77,77,.15);  color: var(--col-s);     border: 1px solid rgba(255,77,77,.3); }
+    .nav-item[data-rank="aplus"] .nav-badge { background: rgba(255,123,0,.15);  color: var(--col-aplus); border: 1px solid rgba(255,123,0,.3); }
+    .nav-item[data-rank="a"]     .nav-badge { background: rgba(255,202,40,.13); color: var(--col-a);     border: 1px solid rgba(255,202,40,.3); }
+    .nav-item[data-rank="b"]     .nav-badge { background: rgba(79,195,247,.12); color: var(--col-b);     border: 1px solid rgba(79,195,247,.3); }
+    .nav-item[data-rank="c"]     .nav-badge { background: rgba(179,157,219,.12);color: var(--col-c);     border: 1px solid rgba(179,157,219,.3); }
+    .nav-item[data-rank="d"]     .nav-badge { background: rgba(128,203,196,.12);color: var(--col-d);     border: 1px solid rgba(128,203,196,.3); }
+
+    /* hover — full glow per rank */
+    .nav-item[data-rank="splus"]:hover { background: rgba(224,64,251,.1);  border-color: rgba(224,64,251,.35); color: var(--col-splus); box-shadow: inset 3px 0 0 var(--col-splus); }
+    .nav-item[data-rank="s"]:hover     { background: rgba(255,77,77,.1);   border-color: rgba(255,77,77,.35);  color: var(--col-s);     box-shadow: inset 3px 0 0 var(--col-s); }
+    .nav-item[data-rank="aplus"]:hover { background: rgba(255,123,0,.1);   border-color: rgba(255,123,0,.35);  color: var(--col-aplus); box-shadow: inset 3px 0 0 var(--col-aplus); }
+    .nav-item[data-rank="a"]:hover     { background: rgba(255,202,40,.08); border-color: rgba(255,202,40,.3);  color: var(--col-a);     box-shadow: inset 3px 0 0 var(--col-a); }
+    .nav-item[data-rank="b"]:hover     { background: rgba(79,195,247,.08); border-color: rgba(79,195,247,.3);  color: var(--col-b);     box-shadow: inset 3px 0 0 var(--col-b); }
+    .nav-item[data-rank="c"]:hover     { background: rgba(179,157,219,.08);border-color: rgba(179,157,219,.3); color: var(--col-c);     box-shadow: inset 3px 0 0 var(--col-c); }
+    .nav-item[data-rank="d"]:hover     { background: rgba(128,203,196,.08);border-color: rgba(128,203,196,.3); color: var(--col-d);     box-shadow: inset 3px 0 0 var(--col-d); }
+
+    /* active state */
+    .nav-item.active[data-rank="splus"] { background: rgba(224,64,251,.14); border-color: rgba(224,64,251,.5); color: var(--col-splus); box-shadow: inset 3px 0 0 var(--col-splus); }
+    .nav-item.active[data-rank="s"]     { background: rgba(255,77,77,.14);  border-color: rgba(255,77,77,.5);  color: var(--col-s);     box-shadow: inset 3px 0 0 var(--col-s); }
+    .nav-item.active[data-rank="aplus"] { background: rgba(255,123,0,.14);  border-color: rgba(255,123,0,.5);  color: var(--col-aplus); box-shadow: inset 3px 0 0 var(--col-aplus); }
+    .nav-item.active[data-rank="a"]     { background: rgba(255,202,40,.12); border-color: rgba(255,202,40,.45);color: var(--col-a);     box-shadow: inset 3px 0 0 var(--col-a); }
+    .nav-item.active[data-rank="b"]     { background: rgba(79,195,247,.12); border-color: rgba(79,195,247,.45);color: var(--col-b);     box-shadow: inset 3px 0 0 var(--col-b); }
+    .nav-item.active[data-rank="c"]     { background: rgba(179,157,219,.12);border-color: rgba(179,157,219,.45);color: var(--col-c);    box-shadow: inset 3px 0 0 var(--col-c); }
+    .nav-item.active[data-rank="d"]     { background: rgba(128,203,196,.12);border-color: rgba(128,203,196,.45);color: var(--col-d);    box-shadow: inset 3px 0 0 var(--col-d); }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    /* ══════════════════════════════════════
+       MAIN LAYOUT
+    ══════════════════════════════════════ */
+    .page-wrap {
+      margin-left: var(--sidebar-w);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
     .hero {
       position: relative;
       text-align: center;
-      padding: 64px 24px 48px;
+      padding: 56px 24px 44px;
       overflow: hidden;
     }
     .hero::before {
@@ -48,7 +179,7 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(245,197,24,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(224,64,251,.1) 0%, rgba(245,197,24,.08) 40%, transparent 70%),
         linear-gradient(180deg, #0d0d18 0%, var(--bg) 100%);
       z-index: 0;
     }
@@ -56,18 +187,18 @@
 
     .site-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(56px, 10vw, 120px);
+      font-size: clamp(52px, 9vw, 110px);
       letter-spacing: 0.04em;
       line-height: 1;
-      background: linear-gradient(135deg, #f5c518 0%, #ff7b00 50%, #ff4d4d 100%);
+      background: linear-gradient(135deg, #e040fb 0%, #f5c518 40%, #ff7b00 70%, #ff4d4d 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 0 40px rgba(245,197,24,.35));
+      filter: drop-shadow(0 0 40px rgba(224,64,251,.3));
     }
     .site-sub {
       font-family: 'Space Mono', monospace;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
       margin-top: 8px;
       letter-spacing: 0.12em;
@@ -76,13 +207,13 @@
 
     .notice-box {
       display: inline-block;
-      margin: 28px auto 0;
-      background: rgba(255,77,77,.08);
-      border: 1px solid rgba(255,77,77,.3);
+      margin: 24px auto 0;
+      background: rgba(255,77,77,.07);
+      border: 1px solid rgba(255,77,77,.28);
       border-radius: var(--radius);
-      padding: 14px 24px;
-      max-width: 720px;
-      font-size: 13px;
+      padding: 13px 22px;
+      max-width: 680px;
+      font-size: 12px;
       font-weight: 600;
       color: #ff9a9a;
       letter-spacing: 0.04em;
@@ -93,15 +224,15 @@
       font-size: 11px;
       color: var(--muted);
       font-weight: 400;
-      margin-top: 4px;
-      letter-spacing: 0.06em;
+      margin-top: 3px;
+      letter-spacing: 0.05em;
     }
 
     .discord-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-top: 18px;
+      margin-top: 16px;
       background: #5865F2;
       color: #fff;
       text-decoration: none;
@@ -115,29 +246,34 @@
     .discord-btn:hover { background: #4752c4; transform: translateY(-2px); }
     .discord-btn svg { flex-shrink: 0; }
 
-    /* ── DIVIDER ── */
-    .divider {
+    .hero-divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 0 40px;
+      margin: 44px 40px 0;
     }
 
-    /* ── CONTENT ── */
-    .content { padding: 0 24px 80px; max-width: 1400px; margin: 0 auto; }
+    /* ══════════════════════════════════════
+       CONTENT
+    ══════════════════════════════════════ */
+    .content { padding: 0 32px 80px; max-width: 1200px; }
+
+    /* rank panel — hidden by default */
+    .rank-panel { display: none; }
+    .rank-panel.active { display: block; }
 
     /* ── RANK SECTION ── */
-    .rank-section { margin-top: 52px; }
+    .rank-section { margin-top: 44px; }
 
     .rank-header {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .rank-badge {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 36px;
-      min-width: 80px;
+      font-size: 34px;
+      min-width: 76px;
       text-align: center;
       padding: 6px 14px;
       border-radius: 8px;
@@ -146,31 +282,26 @@
     }
     .rank-label {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
+      font-size: 21px;
       letter-spacing: 0.06em;
       color: var(--muted);
     }
-    .rank-line {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    .rank-line { flex: 1; height: 1px; background: var(--border); }
 
-    /* per-rank colours */
-    .rank-s    .rank-badge { background: rgba(255,77,77,.18);  color: var(--s);    border: 1px solid rgba(255,77,77,.4);   }
-    .rank-aplus .rank-badge { background: rgba(255,123,0,.18); color: var(--aplus); border: 1px solid rgba(255,123,0,.4);  }
-    .rank-a    .rank-badge { background: rgba(255,202,40,.15); color: var(--a);    border: 1px solid rgba(255,202,40,.35); }
-    .rank-bplus .rank-badge { background: rgba(168,224,99,.12); color: var(--bplus); border: 1px solid rgba(168,224,99,.35);}
-    .rank-b    .rank-badge { background: rgba(79,195,247,.12); color: var(--b);    border: 1px solid rgba(79,195,247,.35); }
-    .rank-c    .rank-badge { background: rgba(179,157,219,.12); color: var(--c);   border: 1px solid rgba(179,157,219,.35);}
-    .rank-d    .rank-badge { background: rgba(128,203,196,.12); color: var(--d);   border: 1px solid rgba(128,203,196,.35);}
-    .rank-f    .rank-badge { background: rgba(84,110,122,.18);  color: var(--f);   border: 1px solid rgba(84,110,122,.4);  }
+    /* badge colours per section */
+    .rank-splus .rank-badge { background: rgba(224,64,251,.18);  color: var(--col-splus); border: 1px solid rgba(224,64,251,.4);  }
+    .rank-s     .rank-badge { background: rgba(255,77,77,.18);   color: var(--col-s);     border: 1px solid rgba(255,77,77,.4);   }
+    .rank-aplus .rank-badge { background: rgba(255,123,0,.18);   color: var(--col-aplus); border: 1px solid rgba(255,123,0,.4);   }
+    .rank-a     .rank-badge { background: rgba(255,202,40,.14);  color: var(--col-a);     border: 1px solid rgba(255,202,40,.35); }
+    .rank-b     .rank-badge { background: rgba(79,195,247,.12);  color: var(--col-b);     border: 1px solid rgba(79,195,247,.35); }
+    .rank-c     .rank-badge { background: rgba(179,157,219,.12); color: var(--col-c);     border: 1px solid rgba(179,157,219,.35);}
+    .rank-d     .rank-badge { background: rgba(128,203,196,.12); color: var(--col-d);     border: 1px solid rgba(128,203,196,.35);}
 
     /* ── ITEMS GRID ── */
     .items-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+      gap: 12px;
     }
 
     .item-card {
@@ -181,24 +312,26 @@
       transition: transform .18s, border-color .18s, box-shadow .18s;
       cursor: default;
     }
-    .item-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(245,197,24,.4);
-      box-shadow: 0 8px 32px rgba(0,0,0,.5);
-    }
+
+    /* card hover colour changes with rank */
+    .rank-splus .item-card:hover { border-color: rgba(224,64,251,.5); box-shadow: 0 6px 28px rgba(224,64,251,.18); transform: translateY(-4px); }
+    .rank-s     .item-card:hover { border-color: rgba(255,77,77,.5);  box-shadow: 0 6px 28px rgba(255,77,77,.18);  transform: translateY(-4px); }
+    .rank-aplus .item-card:hover { border-color: rgba(255,123,0,.5);  box-shadow: 0 6px 28px rgba(255,123,0,.18);  transform: translateY(-4px); }
+    .rank-a     .item-card:hover { border-color: rgba(255,202,40,.5); box-shadow: 0 6px 28px rgba(255,202,40,.15); transform: translateY(-4px); }
+    .rank-b     .item-card:hover { border-color: rgba(79,195,247,.5); box-shadow: 0 6px 28px rgba(79,195,247,.15); transform: translateY(-4px); }
+    .rank-c     .item-card:hover { border-color: rgba(179,157,219,.5);box-shadow: 0 6px 28px rgba(179,157,219,.15);transform: translateY(-4px); }
+    .rank-d     .item-card:hover { border-color: rgba(128,203,196,.5);box-shadow: 0 6px 28px rgba(128,203,196,.15);transform: translateY(-4px); }
 
     .item-img {
       width: 100%;
       aspect-ratio: 1 / 1;
-      object-fit: cover;
       background: var(--surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 46px;
     }
     .item-img img { width: 100%; height: 100%; object-fit: cover; }
-
     .item-body { padding: 10px 12px 12px; }
 
     .item-name {
@@ -212,7 +345,6 @@
     }
 
     .item-meta { display: flex; flex-direction: column; gap: 3px; }
-
     .meta-row {
       display: flex;
       justify-content: space-between;
@@ -220,7 +352,6 @@
       font-size: 11px;
       color: var(--muted);
     }
-    .meta-row strong { color: var(--text); font-size: 11px; }
 
     .rarity-pill {
       font-family: 'Space Mono', monospace;
@@ -228,575 +359,501 @@
       font-weight: 700;
       padding: 2px 7px;
       border-radius: 4px;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
     }
-    .rarity-exotic    { background: rgba(255,77,77,.15); color: #ff4d4d; border: 1px solid rgba(255,77,77,.35); }
-    .rarity-legendary { background: rgba(255,202,40,.15); color: var(--a); }
-    .rarity-epic      { background: rgba(179,157,219,.15); color: var(--c); }
-    .rarity-rare      { background: rgba(79,195,247,.15);  color: var(--b); }
-    .rarity-uncommon  { background: rgba(168,224,99,.12);  color: var(--bplus); }
-    .rarity-common    { background: rgba(84,110,122,.15);  color: var(--f); }
+    .rarity-divine    { background: rgba(224,64,251,.15);  color: var(--col-splus); }
+    .rarity-legendary { background: rgba(255,202,40,.15);  color: var(--col-a); }
+    .rarity-epic      { background: rgba(179,157,219,.15); color: var(--col-c); }
+    .rarity-rare      { background: rgba(79,195,247,.15);  color: var(--col-b); }
+    .rarity-uncommon  { background: rgba(128,203,196,.12); color: var(--col-d); }
+    .rarity-common    { background: rgba(84,110,122,.15);  color: #546e7a; }
 
-    .demand-dots {
-      display: flex;
-      gap: 3px;
-    }
-    .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--border);
-    }
+    .demand-dots { display: flex; gap: 3px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
     .dot.filled { background: var(--accent); }
+
+    /* splus dots are purple */
+    .rank-splus .dot.filled { background: var(--col-splus); }
 
     /* ── FOOTER ── */
     footer {
       text-align: center;
-      padding: 28px 24px;
-      font-size: 12px;
+      padding: 26px 24px;
+      font-size: 11px;
       color: var(--muted);
       border-top: 1px solid var(--border);
       font-family: 'Space Mono', monospace;
       letter-spacing: 0.06em;
+      margin-left: var(--sidebar-w);
     }
 
-    /* ── PLACEHOLDER CARD ── */
-    .placeholder-card .item-img { opacity: .35; }
-    .placeholder-card { opacity: .6; }
-
-    @media (max-width: 600px) {
-      .items-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { display: none; }
+      .items-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════ HERO ═══════════════ -->
-<header class="hero">
-  <h1 class="site-title">FSS Value List</h1>
-  <p class="site-sub">Fifa Super Soccer · Community Value List · Last updated June 26, 2026</p>
-
-  <div class="notice-box">
-    ⚠️ PLEASE, IF YOU HAVE AN ITEM YOU THINK IS RARE, SEND ITS NAME, PHOTO, HOW AND WHEN YOU GOT IT IN OUR DISCORD SERVER
-    <span>All submissions are reviewed by our team before being added to the list.</span>
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    FSS Value List
+    <span>Fifa Super Soccer</span>
   </div>
 
-  <br />
-  <a class="discord-btn" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">
-    <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
-    </svg>
-    Join our Discord Server
-  </a>
-</header>
+  <div class="sidebar-section-title">Rankings</div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-rank="splus" href="#" onclick="switchRank('splus',this);return false;">
+      <span class="nav-badge">S+</span> S+ Tier
+    </a>
+    <a class="nav-item" data-rank="s" href="#" onclick="switchRank('s',this);return false;">
+      <span class="nav-badge">S</span> S Tier
+    </a>
+    <a class="nav-item" data-rank="aplus" href="#" onclick="switchRank('aplus',this);return false;">
+      <span class="nav-badge">A+</span> A+ Tier
+    </a>
+    <a class="nav-item" data-rank="a" href="#" onclick="switchRank('a',this);return false;">
+      <span class="nav-badge">A</span> A Tier
+    </a>
+    <a class="nav-item" data-rank="b" href="#" onclick="switchRank('b',this);return false;">
+      <span class="nav-badge">B</span> B Tier
+    </a>
+    <a class="nav-item" data-rank="c" href="#" onclick="switchRank('c',this);return false;">
+      <span class="nav-badge">C</span> C Tier
+    </a>
+    <a class="nav-item" data-rank="d" href="#" onclick="switchRank('d',this);return false;">
+      <span class="nav-badge">D</span> D Tier
+    </a>
+  </nav>
 
-<div class="divider"></div>
+  <div class="sidebar-footer">
+    Last updated<br/>June 26, 2026
+  </div>
+</aside>
 
-<!-- ═══════════════ CONTENT ═══════════════ -->
-<main class="content">
+<!-- ═══════════════ PAGE WRAP ═══════════════ -->
+<div class="page-wrap">
 
-  <!-- ── RANK S ── -->
-  <section class="rank-section rank-s">
-    <div class="rank-header">
-      <div class="rank-badge">S</div>
-      <div class="rank-label">Tier S</div>
-      <div class="rank-line"></div>
+  <!-- HERO -->
+  <header class="hero">
+    <h1 class="site-title">FSS Value List</h1>
+    <p class="site-sub">Fifa Super Soccer · Community Value List · Last updated June 26, 2026</p>
+
+    <div class="notice-box">
+      ⚠️ PLEASE, IF YOU HAVE AN ITEM YOU THINK IS RARE, SEND ITS NAME, PHOTO, HOW AND WHEN YOU GOT IT IN OUR DISCORD SERVER
+      <span>All submissions are reviewed by our team before being added to the list.</span>
     </div>
-    <div class="items-grid">
 
-      <div class="item-card">
-            <div class="item-img">
-        <img src="images/DevWristband.png" alt="Dev Wristband">
-            </div>
-        <div class="item-body">
-          <div class="item-name">Developer Wristband</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Rarity</span>
-              <span class="rarity-pill rarity-exotic">Exotic</span>
-            </div>
-            <div class="meta-row">
-              <span>Demand</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div>
+    <br/>
+    <a class="discord-btn" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+      </svg>
+      Join our Discord Server
+    </a>
+    <div class="hero-divider"></div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ══ S+ PANEL ══ -->
+    <div class="rank-panel active" id="panel-splus">
+      <section class="rank-section rank-splus">
+        <div class="rank-header">
+          <div class="rank-badge">S+</div>
+          <div class="rank-label">S+ Tier — Divine / One of a Kind</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">👑</div>
+            <div class="item-body">
+              <div class="item-name">Divine Crown</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-divine">Divine</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <div class="item-card">
+            <div class="item-img">💜</div>
+            <div class="item-body">
+              <div class="item-name">Cosmic Ball</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-divine">Divine</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">🌌</div>
+            <div class="item-body">
+              <div class="item-name">Galaxy Kit</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-divine">Divine</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
-
-
-
+      </section>
     </div>
-  </section>
 
-  <!-- ── RANK A+ ── -->
-  <section class="rank-section rank-aplus">
-    <div class="rank-header">
-      <div class="rank-badge">A+</div>
-      <div class="rank-label">Tier A+ — Very Rare</div>
-      <div class="rank-line"></div>
+    <!-- ══ S PANEL ══ -->
+    <div class="rank-panel" id="panel-s">
+      <section class="rank-section rank-s">
+        <div class="rank-header">
+          <div class="rank-badge">S</div>
+          <div class="rank-label">S Tier — Legendary / Unobtainable</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🏆</div>
+            <div class="item-body">
+              <div class="item-name">Golden Boot</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-legendary">Legendary</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">⭐</div>
+            <div class="item-body">
+              <div class="item-name">World Cup Trophy</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-legendary">Legendary</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">🥇</div>
+            <div class="item-body">
+              <div class="item-name">Platinum Whistle</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-legendary">Legendary</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
-    <div class="items-grid">
 
-      <div class="item-card">
-        <div class="item-img">🔥</div>
-        <div class="item-body">
-          <div class="item-name">Flaming Ball</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-epic">Epic</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div>
+    <!-- ══ A+ PANEL ══ -->
+    <div class="rank-panel" id="panel-aplus">
+      <section class="rank-section rank-aplus">
+        <div class="rank-header">
+          <div class="rank-badge">A+</div>
+          <div class="rank-label">A+ Tier — Very Rare</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🔥</div>
+            <div class="item-body">
+              <div class="item-name">Flaming Ball</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-epic">Epic</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">💎</div>
-        <div class="item-body">
-          <div class="item-name">Diamond Cleat</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-epic">Epic</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">💎</div>
+            <div class="item-body">
+              <div class="item-name">Diamond Cleat</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-epic">Epic</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">🌟</div>
-        <div class="item-body">
-          <div class="item-name">Star Captain</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-epic">Epic</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">🌟</div>
+            <div class="item-body">
+              <div class="item-name">Star Captain</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-epic">Epic</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">⚡</div>
-        <div class="item-body">
-          <div class="item-name">Thunder Gloves</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-epic">Epic</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">⚡</div>
+            <div class="item-body">
+              <div class="item-name">Thunder Gloves</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-epic">Epic</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
+        </div>
+      </section>
     </div>
-  </section>
 
-  <!-- ── RANK A ── -->
-  <section class="rank-section rank-a">
-    <div class="rank-header">
-      <div class="rank-badge">A</div>
-      <div class="rank-label">Tier A — Rare</div>
-      <div class="rank-line"></div>
+    <!-- ══ A PANEL ══ -->
+    <div class="rank-panel" id="panel-a">
+      <section class="rank-section rank-a">
+        <div class="rank-header">
+          <div class="rank-badge">A</div>
+          <div class="rank-label">A Tier — Rare</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🎯</div>
+            <div class="item-body">
+              <div class="item-name">Precision Jersey</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-rare">Rare</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">🏅</div>
+            <div class="item-body">
+              <div class="item-name">Gold Medal</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-rare">Rare</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">🦅</div>
+            <div class="item-body">
+              <div class="item-name">Eagle Wings</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-rare">Rare</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
-    <div class="items-grid">
 
-      <div class="item-card">
-        <div class="item-img">🎯</div>
-        <div class="item-body">
-          <div class="item-name">Precision Jersey</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-rare">Rare</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div>
+    <!-- ══ B PANEL ══ -->
+    <div class="rank-panel" id="panel-b">
+      <section class="rank-section rank-b">
+        <div class="rank-header">
+          <div class="rank-badge">B</div>
+          <div class="rank-label">B Tier — Uncommon</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🥅</div>
+            <div class="item-body">
+              <div class="item-name">Mini Net</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-uncommon">Uncommon</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">🏅</div>
-        <div class="item-body">
-          <div class="item-name">Gold Medal</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-rare">Rare</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">🎒</div>
+            <div class="item-body">
+              <div class="item-name">Sports Bag</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-uncommon">Uncommon</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">🦅</div>
-        <div class="item-body">
-          <div class="item-name">Eagle Wings</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-rare">Rare</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">🧤</div>
+            <div class="item-body">
+              <div class="item-name">Keeper Gloves</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-uncommon">Uncommon</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
+        </div>
+      </section>
     </div>
-  </section>
 
-  <!-- ── RANK B+ ── -->
-  <section class="rank-section rank-bplus">
-    <div class="rank-header">
-      <div class="rank-badge">B+</div>
-      <div class="rank-label">Tier B+ — Uncommon+</div>
-      <div class="rank-line"></div>
+    <!-- ══ C PANEL ══ -->
+    <div class="rank-panel" id="panel-c">
+      <section class="rank-section rank-c">
+        <div class="rank-header">
+          <div class="rank-badge">C</div>
+          <div class="rank-label">C Tier — Common+</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🎀</div>
+            <div class="item-body">
+              <div class="item-name">Team Ribbon</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-common">Common</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-card">
+            <div class="item-img">📣</div>
+            <div class="item-body">
+              <div class="item-name">Fan Horn</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-common">Common</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
-    <div class="items-grid">
 
-      <div class="item-card">
-        <div class="item-img">🌿</div>
-        <div class="item-body">
-          <div class="item-name">Green Armband</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-uncommon">Uncommon</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div>
+    <!-- ══ D PANEL ══ -->
+    <div class="rank-panel" id="panel-d">
+      <section class="rank-section rank-d">
+        <div class="rank-header">
+          <div class="rank-badge">D</div>
+          <div class="rank-label">D Tier — Common</div>
+          <div class="rank-line"></div>
+        </div>
+        <div class="items-grid">
+
+          <div class="item-card">
+            <div class="item-img">🟦</div>
+            <div class="item-body">
+              <div class="item-name">Blue Cone</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-common">Common</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="item-card">
-        <div class="item-img">🎽</div>
-        <div class="item-body">
-          <div class="item-name">Neon Jersey</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-uncommon">Uncommon</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
+          <div class="item-card">
+            <div class="item-img">🟧</div>
+            <div class="item-body">
+              <div class="item-name">Orange Bib</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-common">Common</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
+          <div class="item-card">
+            <div class="item-img">⚽</div>
+            <div class="item-body">
+              <div class="item-name">Starter Ball</div>
+              <div class="item-meta">
+                <div class="meta-row"><span>Raridade</span><span class="rarity-pill rarity-common">Common</span></div>
+                <div class="meta-row"><span>Demanda</span>
+                  <div class="demand-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
-  </section>
 
-  <!-- ── RANK B ── -->
-  <section class="rank-section rank-b">
-    <div class="rank-header">
-      <div class="rank-badge">B</div>
-      <div class="rank-label">Tier B — Uncommon</div>
-      <div class="rank-line"></div>
-    </div>
-    <div class="items-grid">
-
-      <div class="item-card">
-        <div class="item-img">🥅</div>
-        <div class="item-body">
-          <div class="item-name">Mini Net</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-uncommon">Uncommon</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-img">🎒</div>
-        <div class="item-body">
-          <div class="item-name">Sports Bag</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-uncommon">Uncommon</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-img">🧤</div>
-        <div class="item-body">
-          <div class="item-name">Keeper Gloves</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-uncommon">Uncommon</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot filled"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── RANK C ── -->
-  <section class="rank-section rank-c">
-    <div class="rank-header">
-      <div class="rank-badge">C</div>
-      <div class="rank-label">Tier C — Common+</div>
-      <div class="rank-line"></div>
-    </div>
-    <div class="items-grid">
-
-      <div class="item-card">
-        <div class="item-img">🎀</div>
-        <div class="item-body">
-          <div class="item-name">Team Ribbon</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-img">📣</div>
-        <div class="item-body">
-          <div class="item-name">Fan Horn</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── RANK D ── -->
-  <section class="rank-section rank-d">
-    <div class="rank-header">
-      <div class="rank-badge">D</div>
-      <div class="rank-label">Tier D — Common</div>
-      <div class="rank-line"></div>
-    </div>
-    <div class="items-grid">
-
-      <div class="item-card">
-        <div class="item-img">🟦</div>
-        <div class="item-body">
-          <div class="item-name">Blue Cone</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-img">🟧</div>
-        <div class="item-body">
-          <div class="item-name">Orange Bib</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot filled"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── RANK F ── -->
-  <section class="rank-section rank-f">
-    <div class="rank-header">
-      <div class="rank-badge">F</div>
-      <div class="rank-label">Tier F — No Value / Junk</div>
-      <div class="rank-line"></div>
-    </div>
-    <div class="items-grid">
-
-      <div class="item-card placeholder-card">
-        <div class="item-img">⚽</div>
-        <div class="item-body">
-          <div class="item-name">Starter Ball</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card placeholder-card">
-        <div class="item-img">🎫</div>
-        <div class="item-body">
-          <div class="item-name">Used Ticket</div>
-          <div class="item-meta">
-            <div class="meta-row">
-              <span>Raridade</span>
-              <span class="rarity-pill rarity-common">Common</span>
-            </div>
-            <div class="meta-row">
-              <span>Demanda</span>
-              <div class="demand-dots">
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-</main>
+  </main>
+</div>
 
 <footer>
   FSS Value List · Not affiliated with Fifa Super Soccer or FIFA · Community-made · 2026
 </footer>
+
+<script>
+  function switchRank(rank, el) {
+    // hide all panels
+    document.querySelectorAll('.rank-panel').forEach(p => p.classList.remove('active'));
+    // deactivate all nav items
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    // show selected panel
+    document.getElementById('panel-' + rank).classList.add('active');
+    // activate nav item
+    el.classList.add('active');
+    // scroll to top of content
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 
 </body>
 </html>
